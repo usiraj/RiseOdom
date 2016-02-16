@@ -1,0 +1,6 @@
+#ifndef RISEODOMSETTINGS_H
+#define RISEODOMSETTINGS_H
+
+#cmakedefine USE_PENTIUM4 1
+
+#endif

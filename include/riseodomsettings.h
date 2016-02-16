@@ -1,0 +1,6 @@
+#ifndef RISEODOMSETTINGS_H
+#define RISEODOMSETTINGS_H
+
+/* #undef USE_PENTIUM4 */
+
+#endif
