@@ -114,10 +114,11 @@ void StereoVodom::add_imagedata( const Frame_Data &data, const double time)
 }
 void StereoVodom::estimate_latest_motion(cv::Mat *dbgimg)
 {
-	// get latest keyframe	
+	// get latest keyframe
 	int _kfr = this->_getlatestkeyframe();
 	int _cfr = this->get_frames_length()-1;
 	NormalFrame *curframe = &(this->frames[_cfr]);
+	bool _lastst = this->_lastokay;
 	this->_lastokay = false;
 	if ( (_kfr < 0) || (curframe->frame_type == FRAME_BAD) ){
 		this->frames.back().cam_frame = this->frames[this->get_frames_length()-2].cam_frame;
@@ -127,13 +128,19 @@ void StereoVodom::estimate_latest_motion(cv::Mat *dbgimg)
 		TransformationMatrix old_pi = this->frames[_kfr].cam_frame.getInverse();
 		TransformationMatrix del_pose = old_pi *  this->frames.back().cam_frame;
 		Frame_Data pd =	this->frames[_kfr].data.predicted_data(del_pose, this->_cammatrix, this->_baseline);
-		//Frame_Data pd =	this->frames[_kfr].data;		
+		//Frame_Data pd =	this->frames[_kfr].data;
+		double srchrad;
+		if ( _lastst ) {
+			srchrad = this->search_radius;
+		} else {
+			srchrad = -1.;
+		}		
 		std::vector<int> mtches ;
 		if ( this->ransac ){
-			mtches = pd.match_with_ransac(this->frames.back().alldata, this->loweratio, this->search_threshold, this->search_radius,
+			mtches = pd.match_with_ransac(this->frames.back().alldata, this->loweratio, this->search_threshold, srchrad,
 													   this->_cammatrix, this->reprojerror, this->iterations, &(this->__cache_rvec), &(this->__cache_tvec)) ;
 		} else {
-			mtches = pd.match_with(this->frames.back().alldata, this->loweratio, this->search_threshold, this->search_radius);
+			mtches = pd.match_with(this->frames.back().alldata, this->loweratio, srchrad, this->search_radius);
 		}
 		//// Put Valid Data ////
 		int cnts = 0;
@@ -161,7 +168,7 @@ void StereoVodom::estimate_latest_motion(cv::Mat *dbgimg)
 			this->_lastokay = true;
 		} else {
 			this->frames.back().cam_frame = this->frames[this->get_frames_length()-2].cam_frame;
-			fprintf(stderr,"carrying on transformation because of matches less than 9\n");	fflush(stdout);
+			fprintf(stderr,"carrying on transformation because of matches less than 5\n");	fflush(stdout);
 		}
 	}
 }

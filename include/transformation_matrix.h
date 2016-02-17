@@ -18,7 +18,7 @@
 #ifndef TRANSFORMATIONMATRIX_H
 #define TRANSFORMATIONMATRIX_H
 
-#define MAXIMUM_POSSIBLE_VEL 20.
+#define MAXIMUM_POSSIBLE_VEL 50.
 
 #include <opencv2/opencv.hpp>
 #include <vector>

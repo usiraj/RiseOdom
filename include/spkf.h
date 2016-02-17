@@ -58,8 +58,9 @@ public:
 	static cv::Mat calculate_covZ(const cv::Mat &Z, const cv::Mat  &Zmean, const cv::Mat &wtsc);
 	static cv::Mat calculate_covXZ(const cv::Mat &Z, const cv::Mat &Zmean, const cv::Mat &sig_pts,
 							   const cv::Mat &xmean, const cv::Mat &wtsc);
-	static cv::Mat calculate_sigmamat(const cv::Mat &P, const double lambda, const int L);
+	static cv::Mat calculate_sigmamat(const cv::Mat &P, const double lambda, const int L, const bool cholesky=false);
 	static cv::Mat calculate_sigmapts(const cv::Mat &xmean, const cv::Mat &sigmamat);
+	static cv::Mat CholeskyDecomposition(const cv::Mat& input);
 protected:
 	// for iterative version
 	double _convergence;
@@ -82,6 +83,7 @@ protected:
 	virtual cv::Mat _correct_constraints(const cv::Mat &mat) const;	
 private:
 	// core functions
+	void _protectP();
 	void _sigma_prediction(const double delt, void *ptr);
 	void _update_measurement_ukf(const cv::Mat &z, const int idx, void *ptr);
 	void _update_measurement_ispkf(const cv::Mat &z, const int idx, void *ptr);

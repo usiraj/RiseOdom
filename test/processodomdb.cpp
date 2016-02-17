@@ -97,7 +97,7 @@ void _processdataset(){
 	ImageDatabase *db;
 	RiseOdom::StereoPreProcess impre;
 	RiseOdom::StereoVodom sfun(3);
-	ISPKF_2D ispkf(1E-3,2,0);
+	ISPKF_2D ispkf(1E-2,2,0);
 	ispkf.set_iteration_criteria(1E-6, 20);
 	if ( CmdLine_USELAB ){
 		db = new ImageDatabase(CmdLine_SEQNO);
@@ -123,18 +123,18 @@ void _processdataset(){
 	}	
 	db->set_scale(_scaling);
 	// initialize impre
-	impre.initialize(50, 2400, 15, db->image_size());	
-	impre.setCam(db->getIntrinsicLeft(), db->get_baseline(), 5.);
-	impre.setMatching(1, 96, 0.65, 64);
+	impre.initialize(240, 3000, 7, db->image_size());	
+	impre.setCam(db->getIntrinsicLeft(), db->get_baseline(), 3.);
+	impre.setMatching(3, 65, 0.75, 48);
 	// initialize sfun
 	sfun.initialize(db->get_baseline(), db->get_focus(), db->getIntrinsicLeft());
-	sfun.setsearchcriteria(0.65, 64 , 220, true );
+	sfun.setsearchcriteria(0.95, 48 , 90, true );
 	sfun.setdesiredreprojectionerror(2.0);
-	sfun.setitereations(0.995, 0.7);
+	sfun.setitereations(0.995, 0.8);
 	sfun.register_ispkf(&ispkf);
 	// initializing ispkf
-	ispkf.setstatecovs(1E-8, 1E-8, 1E-8, 1E-8, 1E-8);
-	ispkf.setrmatcovs(1E-3, 1E-5, 1E-5, 1E-10, 1E-10);
+	ispkf.setstatecovs(1E-4, 1E-5, 1E-5, 1E-4, 1E-5);
+	ispkf.setrmatcovs(1E-6, 1E-6, 1E-6, 0.05, 1E-6);
 	ispkf.StartFilter();
 	for ( int _i = 0;; ++_i) {
 		printf("Frame %d\n", _i); fflush(stdout);
@@ -144,7 +144,8 @@ void _processdataset(){
 		RiseOdom::Frame_Data data = impre.getFrameData() ;data.frame_id = _i;
 		sfun.add_imagedata(data, _frametime);
 		if ( CmdLine_DISPLAY ){
-			imgo = RiseOdom::draw_framescanmatch(imgl, imgr, data);			/// DEBUG DRAW	
+			//imgo = RiseOdom::draw_framescanmatch(imgl, imgr, data);			/// DEBUG DRAW	
+			imgo = imgl.clone();
 			sfun.estimate_latest_motion(&imgo);
 		} else sfun.estimate_latest_motion(NULL);
 		sfun.local_optimization();

@@ -136,8 +136,8 @@ cv::Mat ISPKF_2D::CVMotionModel(const cv::Mat& input, const double _dt, void* pt
 	_oldorig << noisyiput.at<double>(0), noisyiput.at<double>(1), noisyiput.at<double>(2);
 	_deltatrans << 0., 0., 0.;
 	// compute the delta change
-	_deltatrans(0) = noisyiput.at<double>(7) * _dt ; //+ 0.5 * ( _dt * _dt * inp.at<double>(9) );
-	double _deltaang = noisyiput.at<double>(8) * _dt ; //+ 0.5 * ( _dt * _dt * inp.at<double>(10) );
+	_deltatrans(0) = noisyiput.at<double>(7) * _dt ;//+ 0.5 * ( _dt * _dt * noisyiput.at<double>(9) );
+	double _deltaang = noisyiput.at<double>(8) * _dt ;//+ 0.5 * ( _dt * _dt * noisyiput.at<double>(10) );
 	Quaternion _deltaq(cos(_deltaang/ 2.), 0., 0., sin(_deltaang / 2.));		// around z axis
 	// update the delta change
 	Quaternion _newq = oldquat * _deltaq;
@@ -146,14 +146,15 @@ cv::Mat ISPKF_2D::CVMotionModel(const cv::Mat& input, const double _dt, void* pt
 	_newtrans = _oldorig + _newtrans;
 	// copy the newly calculated position
 	res.at<double>(0) = _newtrans(0);		res.at<double>(1) = _newtrans(1);	res.at<double>(2) = _newtrans(2);
-	res.at<double>(3) = _newq.getW();	res.at<double>(4) = _newq.getX();	res.at<double>(5) = _newq.getY();	res.at<double>(6) = _newq.getZ();
+	res.at<double>(3) = _newq.getW();	res.at<double>(4) = _newq.getX();
+	res.at<double>(5) = _newq.getY();	res.at<double>(6) = _newq.getZ();
 	// copy velocities to maintain them
-	res.at<double>(7) = noisyiput.at<double>(7); // - _dt * inp.at<double>(9);
-	res.at<double>(8) = noisyiput.at<double>(8); // - _dt * inp.at<double>(10);
+	res.at<double>(7) = noisyiput.at<double>(7) ;//- _dt * noisyiput.at<double>(9);
+	res.at<double>(8) = noisyiput.at<double>(8) ;//- _dt * noisyiput.at<double>(10);
 	// copy remainder
 	for ( int _i = 9; _i < noisyiput.rows; ++_i ) res.at<double>(_i) = noisyiput.at<double>(_i);
-	//res.at<double>(9) = inp.at<double>(9) * exp( - 100*_dt);
-	//res.at<double>(10) = inp.at<double>(10) * exp ( -10*_dt);	// decaying acceleartion assumption
+	res.at<double>(9) = noisyiput.at<double>(9) ;//* exp( - 2.*_dt);
+	res.at<double>(10) = noisyiput.at<double>(10);// * exp ( -1.*_dt);	// decaying acceleartion assumption
 	return res;	
 }
 cv::Mat ISPKF_2D::ObsvGlobalPosition(const cv::Mat& inp, void* ptr, const cv::Mat noise)
