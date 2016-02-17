@@ -123,7 +123,7 @@ void _processdataset(){
 	}	
 	db->set_scale(_scaling);
 	// initialize impre
-	impre.initialize(240, 3000, 7, db->image_size());	
+	impre.initialize(240, 2000, 7, db->image_size());	
 	impre.setCam(db->getIntrinsicLeft(), db->get_baseline(), 3.);
 	impre.setMatching(3, 65, 0.75, 48);
 	// initialize sfun
@@ -134,7 +134,7 @@ void _processdataset(){
 	sfun.register_ispkf(&ispkf);
 	// initializing ispkf
 	ispkf.setstatecovs(1E-4, 1E-5, 1E-5, 1E-4, 1E-5);
-	ispkf.setrmatcovs(1E-6, 1E-6, 1E-6, 0.05, 1E-6);
+	ispkf.setrmatcovs(1E-6, 1E-6, 1E-6, 1E-3, 1E-6);
 	ispkf.StartFilter();
 	for ( int _i = 0;; ++_i) {
 		printf("Frame %d\n", _i); fflush(stdout);
