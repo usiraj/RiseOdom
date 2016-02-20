@@ -15,6 +15,7 @@ option(BUILD_BINARIES "Build binaries" OFF)
 
 optionprint("Using Pentium 4 instructions" USE_PENTIUM4)
 optionprint("Building Binaries" BUILD_BINARIES)
+message(STATUS "CMAKE_INSTALL_PREFIX : ${CMAKE_INSTALL_PREFIX}" )
 ################# GENERATE OPTIONS HEADER ##############
 configure_file("${PROJECT_SOURCE_DIR}/riseodomsettings.h.in" "${PROJECT_SOURCE_DIR}/include/riseodomsettings.h" @ONLY)
 ################## INCLUDE OPENCV ######################
