@@ -1,5 +1,5 @@
 # find sgslam
-FIND_PATH(RISEODOM_INCLUDE_DIR NAMES r/stereoodom_base.h
+FIND_PATH(RISEODOM_INCLUDE_DIR NAMES riseodom/stereoodom_base.h
   PATHS
   ${RISEODOM_ROOT}/include
   ${RISEODOM_ROOT}
