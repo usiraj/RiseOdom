@@ -56,6 +56,7 @@ set(includedir              "\${prefix}/include/riseodom")
 ################ GENERATE PKG-CONFIG ####################
 configure_file("${PROJECT_SOURCE_DIR}/riseodom.pc.in" "${CMAKE_BINARY_DIR}/riseodom.pc" @ONLY)
 install(FILES "${CMAKE_BINARY_DIR}/riseodom.pc" DESTINATION lib/pkgconfig)
+install(FILES "${PROJECT_SOURCE_DIR}/FindRiseOdom.cmake" DESTINATION lib/cmake)
 ################## INSTALL HEADERS ######################
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/" 
 	DESTINATION include/riseodom
