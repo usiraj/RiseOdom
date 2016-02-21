@@ -153,8 +153,8 @@ cv::Mat ISPKF_2D::CVMotionModel(const cv::Mat& input, const double _dt, void* pt
 	res.at<double>(8) = noisyiput.at<double>(8) ;//- _dt * noisyiput.at<double>(10);
 	// copy remainder
 	for ( int _i = 9; _i < noisyiput.rows; ++_i ) res.at<double>(_i) = noisyiput.at<double>(_i);
-	res.at<double>(9) = noisyiput.at<double>(9) ;//* exp( - 2.*_dt);
-	res.at<double>(10) = noisyiput.at<double>(10);// * exp ( -1.*_dt);	// decaying acceleartion assumption
+	//res.at<double>(9) = noisyiput.at<double>(9) ;//* exp( - 2.*_dt);
+	//res.at<double>(10) = noisyiput.at<double>(10);// * exp ( -1.*_dt);	// decaying acceleartion assumption
 	return res;	
 }
 cv::Mat ISPKF_2D::ObsvGlobalPosition(const cv::Mat& inp, void* ptr, const cv::Mat noise)
