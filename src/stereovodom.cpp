@@ -102,10 +102,10 @@ ISPKF_2D* StereoVodom::getptr_ispkf()
 void StereoVodom::add_imagedata( const Frame_Data &data, const double time)
 {
 	/////////// Add Data //////////
+	double _dt2 = this->frames.back().sec - this->frames[this->get_frames_length()-2].sec;
 	StereoOdom_Base::add_imagedata(data, time);
-	if ( this->dospkf ){
-		// Predict
-		double _dt2 = this->frames.back().sec - this->frames[this->get_frames_length()-2].sec;
+	if ( this->dospkf && _dt2 < 10. ){	
+	    // Predict
 		this->ispkf->SigmaPrediction(_dt2);
 		this->frames.back().cam_frame = this->ispkf->getCameraPose();
 	} else {
