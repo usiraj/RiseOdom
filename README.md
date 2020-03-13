@@ -10,3 +10,6 @@ cmake ../
 make
 make install
 </code>
+
+#Disclaimer
+This algorithm as of 2020 is obsolete and might not work for you. There are better recent techniques out there. It is only kept for archival purpose only.
